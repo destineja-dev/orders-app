@@ -1,14 +1,41 @@
 import React from 'react';
-import clsx from 'clsx';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { compose } from 'redux';
+import { createStructuredSelector } from 'reselect';
+import { withStyles } from '@material-ui/core/styles';
+import AddIcon from '@material-ui/icons/Add';
+import injectReducer from 'utils/injectReducer';
+import injectSaga from 'utils/injectSaga';
+
+import { makeSelectLoading, makeSelectError } from 'containers/App/selectors';
+
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import OrdersList from 'components/OrdersList';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import Divider from '@material-ui/core/Divider';
+import InboxIcon from '@material-ui/icons/Inbox';
+import DraftsIcon from '@material-ui/icons/Drafts';
+import FormGroup from '@material-ui/core/FormGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Switch from '@material-ui/core/Switch';
+import Input from '@material-ui/core/Input';
+import Typography from '@material-ui/core/Typography';
 
-const drawerWidth = 0;
+import { loadOrders } from './actions';
+import { makeSelectOrders } from './selectors';
+import reducer from './reducer';
+import saga from './saga';
 
-const useStyles = makeStyles(theme => ({
+const drawerWidth = -10;
+
+const styles = theme => ({
   root: {
     display: 'flex',
   },
@@ -84,26 +111,87 @@ const useStyles = makeStyles(theme => ({
   fixedHeight: {
     height: 240,
   },
-}));
+  input: {
+    margin: theme.spacing(4),
+  },
+});
 
-export default function Dashboard() {
-  const classes = useStyles();
-  const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
+export class OrdersPage extends React.Component {
+  componentDidMount() {
+    const { onInit } = this.props;
+    onInit();
+  }
 
-  return (
-    <div className={classes.root}>
-      <main className={classes.content}>
-        <div className={classes.appBarSpacer} />
-        <Container maxWidth="lg" className={classes.container}>
-          <Grid container spacing={3}>
-            <Grid item xs={12}>
-              <Paper className={classes.paper}>
-                <OrdersList />
-              </Paper>
+  render() {
+    const { classes, orders } = this.props;
+    return (
+      <div className={classes.root}>
+        <main className={classes.content}>
+          <Container maxWidth="lg" className={classes.container}>
+            <Grid container spacing={1}>
+              <Grid item xs={2}>
+                <Paper className={classes.paper}>
+                  <List component="nav" aria-label="main mailbox folders">
+                    <ListItem button component="a" href="/add-order">
+                      <AddIcon />
+                      <ListItemText primary="Adicionar" />
+                    </ListItem>
+                  </List>
+                </Paper>
+              </Grid>
+              <Grid item xs={10}>
+                <Paper className={classes.paper}>
+                  <Input
+                    placeholder="Procurar"
+                    className={classes.input}
+                    inputProps={{
+                      'aria-label': 'description',
+                    }}
+                  />
+                  <OrdersList list={orders || []} />
+                </Paper>
+              </Grid>
             </Grid>
-          </Grid>
-        </Container>
-      </main>
-    </div>
-  );
+          </Container>
+        </main>
+      </div>
+    );
+  }
 }
+
+OrdersPage.propTypes = {
+  loading: PropTypes.bool,
+  error: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
+  orders: PropTypes.oneOfType([PropTypes.array, PropTypes.bool]),
+  onInit: PropTypes.func,
+  classes: PropTypes.object.isRequired,
+};
+
+export function mapDispatchToProps(dispatch) {
+  return {
+    onInit: () => {
+      dispatch(loadOrders());
+    },
+  };
+}
+
+const mapStateToProps = createStructuredSelector({
+  orders: makeSelectOrders(),
+  loading: makeSelectLoading(),
+  error: makeSelectError(),
+});
+
+const withConnect = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+);
+
+const withReducer = injectReducer({ key: 'global', reducer });
+const withSaga = injectSaga({ key: 'global', saga });
+
+export default compose(
+  withStyles(styles),
+  withReducer,
+  withSaga,
+  withConnect,
+)(OrdersPage);

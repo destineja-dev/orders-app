@@ -19,6 +19,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Badge from '@material-ui/core/Badge';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 
 import { mainListItems, secondaryListItems } from 'components/ListItems';
@@ -119,7 +120,7 @@ class App extends React.Component {
   }
 
   state = {
-    open: true,
+    open: false,
   };
 
   handleDrawerOpen = () => {
@@ -159,13 +160,14 @@ class App extends React.Component {
               >
                 <MenuIcon />
               </IconButton>
+              <ShoppingCartIcon />
               <Typography
                 variant="h6"
                 color="inherit"
                 noWrap
                 className={classes.title}
               >
-                ADMIN
+                Controle de DEMANDAS
               </Typography>
             </Toolbar>
           </AppBar>
@@ -193,8 +195,7 @@ class App extends React.Component {
             <div className={classes.appBarSpacer} />
             <BrowserRouter>
               <Switch>
-                <Route exact path="/" component={Dashboard} />
-                <Route exact path="/orders" component={Orders} />
+                <Route exact path="/" component={Orders} />
                 <Route exact path="/add-order" component={AddOrder} />
                 <Route path="" component={NotFoundPage} />
               </Switch>

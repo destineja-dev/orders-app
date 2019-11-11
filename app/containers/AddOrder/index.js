@@ -13,6 +13,13 @@ import Typography from '@material-ui/core/Typography';
 import AddressForm from 'components/AddressForm';
 import PaymentForm from 'components/PaymentForm';
 import Review from 'components/Review';
+import Grid from '@material-ui/core/Grid';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
+import Breadcrumbs from '@material-ui/core/Breadcrumbs';
 
 const useStyles = makeStyles(theme => ({
   appBar: {
@@ -51,7 +58,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const steps = ['Shipping address', 'Payment details', 'Review your order'];
+const steps = ['Informar dados da Demanda', 'Confirmar'];
 
 function getStepContent(step) {
   switch (step) {
@@ -66,7 +73,7 @@ function getStepContent(step) {
   }
 }
 
-export default function Checkout() {
+export default function AddOrderPage() {
   const classes = useStyles();
   const [activeStep, setActiveStep] = React.useState(0);
 
@@ -79,12 +86,19 @@ export default function Checkout() {
   };
 
   return (
-    <React.Fragment>
-      <main className={classes.layout}>
+    <Grid container spacing={1}>
+      <Grid item xs={2}>
         <Paper className={classes.paper}>
-          <Typography component="h1" variant="h4" align="center">
-            Checkout
-          </Typography>
+          <List component="nav" aria-label="main mailbox folders">
+            <ListItem button component="a" href="/">
+              <ArrowBackIosIcon />
+              <ListItemText primary="Voltar" />
+            </ListItem>
+          </List>
+        </Paper>
+      </Grid>
+      <Grid item xs={10}>
+        <Paper className={classes.paper}>
           <Stepper activeStep={activeStep} className={classes.stepper}>
             {steps.map(label => (
               <Step key={label}>
@@ -126,7 +140,7 @@ export default function Checkout() {
             )}
           </React.Fragment>
         </Paper>
-      </main>
-    </React.Fragment>
+      </Grid>
+    </Grid>
   );
 }

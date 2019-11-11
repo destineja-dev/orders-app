@@ -1,13 +1,9 @@
-/**
- * Homepage selectors
- */
-
 import { createSelector } from 'reselect';
 import { initialState } from './reducer';
 
-const selectHome = state => state.get('home', initialState);
+const selectGlobal = state => state.get('global', initialState);
 
-const makeSelectUsername = () =>
-  createSelector(selectHome, homeState => homeState.get('username'));
+const makeSelectOrders = () =>
+  createSelector(selectGlobal, ordersState => ordersState.get('orders'));
 
-export { selectHome, makeSelectUsername };
+export { selectGlobal, makeSelectOrders };
