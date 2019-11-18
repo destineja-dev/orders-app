@@ -1,8 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import hoistNonReactStatics from 'hoist-non-react-statics';
+import find from 'lodash/find';
 
 import getInjectors from './sagaInjectors';
+
+const sagas = [];
 
 /**
  * Dynamically injects a saga, passes component's props as saga arguments
@@ -24,11 +27,15 @@ export default ({ key, saga, mode }) => WrappedComponent => {
     static displayName = `withSaga(${WrappedComponent.displayName ||
       WrappedComponent.name ||
       'Component'})`;
+    static sagas = [];
 
     componentWillMount() {
       const { injectSaga } = this.injectors;
 
-      injectSaga(key, { saga, mode }, this.props);
+      if (!find(sagas, key)) {
+        injectSaga(key, { saga, mode }, this.props);
+        console.log('componentWillMount', key);
+      }
     }
 
     componentWillUnmount() {

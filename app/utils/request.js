@@ -1,4 +1,10 @@
 import 'whatwg-fetch';
+import set from 'lodash/set';
+import defaultsDeep from 'lodash/defaultsDeep';
+
+const api = {
+  base: 'http://localhost:5000/api',
+};
 
 /**
  * Parses the JSON returned by a network request
@@ -39,8 +45,24 @@ function checkStatus(response) {
  *
  * @return {object}           The response data
  */
-export default function request(url, options) {
-  return fetch(url, options)
-    .then(checkStatus)
+export default function request(endpoint, options) {
+  const url = `${api.base}${endpoint}`;
+  const defaults = {
+    headers: {},
+  };
+
+  // use json for put/post
+  if (
+    options &&
+    options.body &&
+    /put|post/i.test(options.method) &&
+    !/binary/i.test(endpoint)
+  ) {
+    defaults.headers['Content-Type'] = 'application/json';
+    set(options, 'body', JSON.stringify(options.body));
+  }
+
+  return fetch(url, defaultsDeep({}, options, defaults))
+    .then(response => checkStatus(response, options))
     .then(parseJSON);
 }

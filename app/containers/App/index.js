@@ -14,28 +14,23 @@ import Toolbar from '@material-ui/core/Toolbar';
 import List from '@material-ui/core/List';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
-import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
-import Badge from '@material-ui/core/Badge';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
-import NotificationsIcon from '@material-ui/icons/Notifications';
 
 import { mainListItems, secondaryListItems } from 'components/ListItems';
 import NotFoundPage from 'containers/NotFoundPage/Loadable';
-import Dashboard from 'containers/Dashboard';
 import Orders from 'containers/Orders';
-import AddOrder from 'containers/AddOrder';
 
 import injectReducer from 'utils/injectReducer';
-import injectSaga from 'utils/injectSaga';
+// import injectSaga from 'utils/injectSaga';
 
 import { makeSelectLoading, makeSelectError } from 'containers/App/selectors';
 
 import { registerSocket } from './actions';
 import reducer from './reducer';
-import saga from './saga';
+// import saga from './saga';
 
 const drawerWidth = 240;
 
@@ -101,9 +96,8 @@ const styles = theme => ({
   appBarSpacer: theme.mixins.toolbar,
   content: {
     flexGrow: 1,
-    padding: theme.spacing(3),
+    padding: theme.spacing(0),
     height: '100vh',
-    overflow: 'auto',
   },
   chartContainer: {
     marginLeft: -22,
@@ -162,12 +156,13 @@ class App extends React.Component {
               </IconButton>
               <ShoppingCartIcon />
               <Typography
+                style={{ marginLeft: 15 }}
                 variant="h6"
                 color="inherit"
                 noWrap
                 className={classes.title}
               >
-                Controle de DEMANDAS
+                demandas app
               </Typography>
             </Toolbar>
           </AppBar>
@@ -195,8 +190,11 @@ class App extends React.Component {
             <div className={classes.appBarSpacer} />
             <BrowserRouter>
               <Switch>
-                <Route exact path="/" component={Orders} />
-                <Route exact path="/add-order" component={AddOrder} />
+                <Route
+                  exact
+                  path="/"
+                  component={props => <Orders {...props} />}
+                />
                 <Route path="" component={NotFoundPage} />
               </Switch>
             </BrowserRouter>
@@ -231,11 +229,11 @@ const withConnect = connect(
 );
 
 const withReducer = injectReducer({ key: 'global', reducer });
-const withSaga = injectSaga({ key: 'global', saga });
+// const withSaga = injectSaga({ key: 'global', saga });
 
 export default compose(
   withStyles(styles),
   withReducer,
-  withSaga,
+  // withSaga,
   withConnect,
 )(App);
