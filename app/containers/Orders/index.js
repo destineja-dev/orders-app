@@ -233,6 +233,7 @@ export class OrdersPage extends React.Component {
                         <SearchIcon />
                       </div>
                       <InputBase
+                        disabled
                         placeholder="Procurar…"
                         classes={{
                           root: classes.inputRoot,

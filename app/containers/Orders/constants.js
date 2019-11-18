@@ -29,7 +29,8 @@ export const SAVE_ORDER = 'ordersapp/SAVE_ORDER';
 export const SAVE_ORDER_SUCCESS = 'ordersapp/SAVE_ORDER_SUCCESS';
 export const SAVE_ORDER_ERROR = 'ordersapp/SAVE_ORDER_ERROR';
 export const SAVE_ORDER_MANIFEST = 'ordersapp/SAVE_ORDER_MANIFEST';
-export const SAVE_ORDER_MANIFEST_SUCCESS = 'ordersapp/SAVE_ORDER_MANIFEST_SUCCESS';
+export const SAVE_ORDER_MANIFEST_SUCCESS =
+  'ordersapp/SAVE_ORDER_MANIFEST_SUCCESS';
 export const SAVE_ORDER_MANIFEST_ERROR = 'ordersapp/SAVE_ORDER_MANIFEST_ERROR';
 export const LOAD_CUSTOMERS = 'ordersapp/LOAD_CUSTOMERS';
 export const CUSTOMERS_LOADED = 'ordersapp/CUSTOMERS_LOADED';

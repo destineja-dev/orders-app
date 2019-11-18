@@ -13,10 +13,7 @@ import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import Button from '@material-ui/core/Button';
 import AddIcon from '@material-ui/icons/Add';
-import {
-  KeyboardTimePicker,
-  KeyboardDatePicker,
-} from '@material-ui/pickers';
+import { KeyboardTimePicker, KeyboardDatePicker } from '@material-ui/pickers';
 
 const styles = theme => ({
   paper: {
@@ -50,7 +47,11 @@ const renderCustomSelect = ({
   </FormControl>
 );
 
-const renderPackagingList = ({ fields, meta: { error, submitFailed }, packagings }) => (
+const renderPackagingList = ({
+  fields,
+  meta: { error, submitFailed },
+  packagings,
+}) => (
   <div>
     <Button
       style={{ marginTop: 20, marginBottom: 20 }}
@@ -87,7 +88,12 @@ const renderPackagingList = ({ fields, meta: { error, submitFailed }, packagings
   </div>
 );
 
-const renderWasteList = ({ fields, meta: { error, submitFailed }, wastes, measurements }) => (
+const renderWasteList = ({
+  fields,
+  meta: { error, submitFailed },
+  wastes,
+  measurements,
+}) => (
   <div>
     <Button
       style={{ marginTop: 20, marginBottom: 20 }}
@@ -117,7 +123,7 @@ const renderWasteList = ({ fields, meta: { error, submitFailed }, wastes, measur
           name={`${member}.quantity`}
           style={{ width: '20%' }}
           label="Quantidade"
-          component={TextField}
+          component={renderTextField}
         />
         <Field
           label="Unidade"
@@ -134,6 +140,12 @@ const renderWasteList = ({ fields, meta: { error, submitFailed }, wastes, measur
       </div>
     ))}
   </div>
+);
+
+const renderTextField = ({ input, label, meta: { touched, error }, ...custom }) => (
+  <FormControl {...custom}>
+    <TextField label={label} {...input} />
+  </FormControl>
 );
 
 const renderNotes = ({ input, label, meta: { touched, error }, ...custom }) => (
@@ -322,8 +334,14 @@ ManifestForm.propTypes = {
   pristine: PropTypes.bool,
   submitting: PropTypes.bool,
   classes: PropTypes.object.isRequired,
-  destinatingCompaniesList: PropTypes.oneOfType([PropTypes.array, PropTypes.bool]),
-  collectingCompaniesList: PropTypes.oneOfType([PropTypes.array, PropTypes.bool]),
+  destinatingCompaniesList: PropTypes.oneOfType([
+    PropTypes.array,
+    PropTypes.bool,
+  ]),
+  collectingCompaniesList: PropTypes.oneOfType([
+    PropTypes.array,
+    PropTypes.bool,
+  ]),
   driversList: PropTypes.oneOfType([PropTypes.array, PropTypes.bool]),
   vehiclesList: PropTypes.oneOfType([PropTypes.array, PropTypes.bool]),
   wastesList: PropTypes.oneOfType([PropTypes.array, PropTypes.bool]),

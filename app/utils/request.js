@@ -1,10 +1,7 @@
 import 'whatwg-fetch';
 import set from 'lodash/set';
 import defaultsDeep from 'lodash/defaultsDeep';
-
-const api = {
-  base: 'http://localhost:5000/api',
-};
+import api from 'utils/api';
 
 /**
  * Parses the JSON returned by a network request

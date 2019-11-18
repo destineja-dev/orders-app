@@ -9,7 +9,6 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
-import DeleteIcon from '@material-ui/icons/Delete';
 import AssignmentIcon from '@material-ui/icons/Assignment';
 import IconButton from '@material-ui/core/IconButton';
 import Avatar from '@material-ui/core/Avatar';
@@ -17,7 +16,6 @@ import { green, orange } from '@material-ui/core/colors';
 
 import sortBy from 'lodash/sortBy';
 import reverse from 'lodash/reverse';
-import take from 'lodash/take';
 
 const styles = theme => ({
   root: {
