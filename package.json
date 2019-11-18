@@ -171,7 +171,7 @@
     "moment": "2.24.0",
     "prop-types": "15.6.1",
     "react": "16.8.0",
-    "react-dom": "16.8.0",
+    "react-dom": "16.4.2",
     "react-helmet": "5.2.0",
     "react-intl": "2.4.0",
     "react-loadable": "5.4.0",
