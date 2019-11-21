@@ -1,5 +1,4 @@
 import { fromJS } from 'immutable';
-import find from 'lodash/find';
 import remove from 'lodash/remove';
 import {
   LOAD_ORDERS,

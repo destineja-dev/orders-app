@@ -5,7 +5,6 @@ import { withStyles } from '@material-ui/core/styles';
 import { Field, FieldArray, reduxForm } from 'redux-form/immutable';
 
 import TextField from '@material-ui/core/TextField';
-import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -14,6 +13,10 @@ import Select from '@material-ui/core/Select';
 import Button from '@material-ui/core/Button';
 import AddIcon from '@material-ui/icons/Add';
 import { KeyboardTimePicker, KeyboardDatePicker } from '@material-ui/pickers';
+import Stepper from '@material-ui/core/Stepper';
+import Step from '@material-ui/core/Step';
+import StepLabel from '@material-ui/core/StepLabel';
+import StepContent from '@material-ui/core/StepContent';
 
 const styles = theme => ({
   paper: {
@@ -31,6 +34,17 @@ const styles = theme => ({
   formControl: {
     margin: theme.spacing(1),
     minWidth: 120,
+  },
+  button: {
+    marginTop: theme.spacing(1),
+    marginRight: theme.spacing(1),
+  },
+  actionsContainer: {
+    marginTop: theme.spacing(2),
+    marginBottom: theme.spacing(2),
+  },
+  resetContainer: {
+    padding: theme.spacing(3),
   },
 });
 
@@ -57,10 +71,10 @@ const renderPackagingList = ({
       style={{ marginTop: 20, marginBottom: 20 }}
       size="small"
       variant="contained"
-      color="default"
+      color="primary"
       onClick={() => fields.push({})}
     >
-      <AddIcon /> acondicionamento
+      <AddIcon />
     </Button>
     {submitFailed && error && <span>{error}</span>}
     {fields.map((member, index) => (
@@ -81,7 +95,7 @@ const renderPackagingList = ({
           name={`${member}.quantity`}
           style={{ width: '30%' }}
           label="Quantidade"
-          component={TextField}
+          component={renderTextField}
         />
       </div>
     ))}
@@ -99,10 +113,10 @@ const renderWasteList = ({
       style={{ marginTop: 20, marginBottom: 20 }}
       size="small"
       variant="contained"
-      color="default"
+      color="primary"
       onClick={() => fields.push({})}
     >
-      <AddIcon /> resíduo
+      <AddIcon />
     </Button>
     {submitFailed && error && <span>{error}</span>}
     {fields.map((member, index) => (
@@ -207,13 +221,143 @@ const renderDateField = props => {
   );
 };
 
+function getSteps() {
+  return [
+    'Adicione informações do Coletor',
+    'Informe Data e Hora da chegada e saída',
+    'Adicione os resíduos coletados',
+    'Adicione os acondicionamentos utilizados',
+    'Informe as observações',
+  ];
+}
+
+function getStepContent(
+  step,
+  classes,
+  collectingCompaniesList,
+  driversList,
+  vehiclesList,
+  wasteCategories,
+  measurementList,
+  packagingList,
+) {
+  switch (step) {
+    case 0:
+      return (
+        <div>
+          <Field
+            style={{ width: '35%' }}
+            label="Coletor"
+            name="transporterId"
+            value={10}
+            component={renderCustomSelect}
+            className={classes.formControl}
+          >
+            {collectingCompaniesList.map(c => (
+              <MenuItem key={c.id} value={c.id}>
+                {c.name}
+              </MenuItem>
+            ))}
+          </Field>
+          <Field
+            style={{ width: '30%' }}
+            name="driverId"
+            label="Motorista"
+            value={10}
+            component={renderCustomSelect}
+            className={classes.formControl}
+          >
+            {driversList.map(c => (
+              <MenuItem key={c.id} value={c.id}>
+                {c.name}
+              </MenuItem>
+            ))}
+          </Field>
+          <Field
+            style={{ width: '30%' }}
+            label="Veículo"
+            name="vehicleId"
+            value={10}
+            component={renderCustomSelect}
+            className={classes.formControl}
+          >
+            {vehiclesList.map(c => (
+              <MenuItem key={c.id} value={c.id}>
+                {c.description}
+              </MenuItem>
+            ))}
+          </Field>
+        </div>
+      );
+    case 1:
+      return (
+        <div>
+          <Field
+            style={{ width: '50%' }}
+            name="at"
+            label="Data"
+            component={renderDateField}
+          />
+          <Field
+            style={{ width: '20%' }}
+            name="arrivalTime"
+            label="Hora Chegada"
+            component={renderTimeField}
+          />
+          <Field
+            style={{ width: '20%' }}
+            label="Hora Saída"
+            name="departureTime"
+            component={renderTimeField}
+          />
+        </div>
+      );
+    case 2:
+      return (
+        <div>
+          <FormControl fullWidth>
+            <FieldArray
+              name="items"
+              component={renderWasteList}
+              wastes={wasteCategories}
+              measurements={measurementList}
+            />
+          </FormControl>
+        </div>
+      );
+    case 3:
+      return (
+        <FormControl fullWidth>
+          <FieldArray
+            name="manifestPackagings"
+            component={renderPackagingList}
+            packagings={packagingList}
+          />
+        </FormControl>
+      );
+    case 4:
+      return (
+        <Field
+          name="notes"
+          multiline
+          rows="4"
+          margin="normal"
+          variant="outlined"
+          component={renderNotes}
+        />
+      );
+    default:
+      return 'Unknown step';
+  }
+}
+
 const ManifestForm = props => {
   const {
     handleSubmit,
     pristine,
     submitting,
     classes,
-    destinatingCompaniesList,
+    collectingCompaniesList,
     driversList,
     vehiclesList,
     wastesList,
@@ -224,107 +368,87 @@ const ManifestForm = props => {
   });
   const packagingList = ['Sacola', 'Tambor', 'Bombona', 'Bag', 'Lata'];
   const measurementList = ['Kg', 'Ton', 'Lt', 'M3', 'Un'];
+  const [activeStep, setActiveStep] = React.useState(0);
+  const steps = getSteps();
+
+  const handleNext = () => {
+    setActiveStep(prevActiveStep => prevActiveStep + 1);
+  };
+
+  const handleBack = () => {
+    setActiveStep(prevActiveStep => prevActiveStep - 1);
+  };
+
+  const handleReset = () => {
+    setActiveStep(0);
+  };
+
   return (
     <Paper className={classes.paper}>
-      <Grid container spacing={1}>
-        <Grid item xs={12}>
-          <form onSubmit={handleSubmit}>
-            <Field
-              style={{ width: '35%' }}
-              label="Destinador"
-              name="destinatorId"
-              value={10}
-              component={renderCustomSelect}
-              className={classes.formControl}
-            >
-              {destinatingCompaniesList.map(c => (
-                <MenuItem key={c.id} value={c.id}>
-                  {c.name}
-                </MenuItem>
-              ))}
-            </Field>
-            <Field
-              style={{ width: '30%' }}
-              name="driverId"
-              label="Motorista"
-              value={10}
-              component={renderCustomSelect}
-              className={classes.formControl}
-            >
-              {driversList.map(c => (
-                <MenuItem key={c.id} value={c.id}>
-                  {c.name}
-                </MenuItem>
-              ))}
-            </Field>
-            <Field
-              style={{ width: '30%' }}
-              label="Veículo"
-              name="vehicleId"
-              value={10}
-              component={renderCustomSelect}
-              className={classes.formControl}
-            >
-              {vehiclesList.map(c => (
-                <MenuItem key={c.id} value={c.id}>
-                  {c.description}
-                </MenuItem>
-              ))}
-            </Field>
-            <Field
-              style={{ width: '50%' }}
-              name="date"
-              label="Data"
-              component={renderDateField}
-            />
-            <Field
-              style={{ width: '20%' }}
-              name="arrivalTime"
-              label="Hora Chegada"
-              component={renderTimeField}
-            />
-            <Field
-              style={{ width: '20%' }}
-              label="Hora Saída"
-              name="departureTime"
-              component={renderTimeField}
-            />
-            <FormControl fullWidth>
-              <FieldArray
-                name="items"
-                component={renderWasteList}
-                wastes={wasteCategories}
-                measurements={measurementList}
-              />
-            </FormControl>
-            <FormControl fullWidth>
-              <FieldArray
-                name="manifestPackagings"
-                component={renderPackagingList}
-                packagings={packagingList}
-              />
-            </FormControl>
-            <Field
-              name="notes"
-              multiline
-              rows="4"
-              margin="normal"
-              variant="outlined"
-              component={renderNotes}
-            />
-            <FormControl style={{ marginTop: 30 }}>
-              <Button
-                type="submit"
-                variant="contained"
-                color="primary"
-                disabled={pristine || submitting}
-              >
-                Salvar
-              </Button>
-            </FormControl>
-          </form>
-        </Grid>
-      </Grid>
+      <div className={classes.root}>
+        <form onSubmit={handleSubmit}>
+          <Stepper activeStep={activeStep} orientation="vertical">
+            {steps.map((label, index) => (
+              <Step key={label}>
+                <StepLabel>{label}</StepLabel>
+                <StepContent>
+                  <div>
+                    {getStepContent(
+                      index,
+                      classes,
+                      collectingCompaniesList,
+                      driversList,
+                      vehiclesList,
+                      wasteCategories,
+                      measurementList,
+                      packagingList,
+                    )}
+                  </div>
+                  <div className={classes.actionsContainer}>
+                    <div>
+                      <Button
+                        disabled={activeStep === 0}
+                        onClick={handleBack}
+                        size="small"
+                        className={classes.button}
+                      >
+                        retornar
+                      </Button>
+                      <Button
+                        variant="contained"
+                        size="small"
+                        onClick={handleNext}
+                        className={classes.button}
+                      >
+                        {activeStep === steps.length - 1
+                          ? 'finalizar'
+                          : 'continuar'}
+                      </Button>
+                    </div>
+                  </div>
+                </StepContent>
+              </Step>
+            ))}
+          </Stepper>
+          {activeStep === steps.length && (
+            <div>
+              <FormControl style={{ marginTop: 60 }}>
+                <Button
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  disabled={pristine || submitting}
+                >
+                  Salvar
+                </Button>
+              </FormControl>
+              <FormControl style={{ marginTop: 60 }}>
+                <Button onClick={handleReset}>Reiniciar</Button>
+              </FormControl>
+            </div>
+          )}
+        </form>
+      </div>
     </Paper>
   );
 };

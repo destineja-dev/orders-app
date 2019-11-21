@@ -7,7 +7,9 @@ import { fade, withStyles } from '@material-ui/core/styles';
 import injectReducer from 'utils/injectReducer';
 import injectSaga from 'utils/injectSaga';
 import { makeSelectLoading, makeSelectError } from 'containers/App/selectors';
-
+import head from 'lodash/head';
+import reverse from 'lodash/reverse';
+import sortBy from 'lodash/sortBy';
 import AddIcon from '@material-ui/icons/Add';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
@@ -152,6 +154,7 @@ export class OrdersPage extends React.Component {
     );
     this.onSaveOrder = this.onSaveOrder.bind(this);
     this.handleSelectOrder = this.handleSelectOrder.bind(this);
+    this.selectFirstOrder = this.selectFirstOrder.bind(this);
   }
 
   componentDidMount() {
@@ -159,14 +162,25 @@ export class OrdersPage extends React.Component {
       fetchOrders,
       fetchCustomers,
       fetchWastes,
+      chooseOrder,
       orders,
       customers,
       wastes,
       loading,
+      orderSelected,
     } = this.props;
     if (!orders && !loading) fetchOrders();
     if (!customers && !loading) fetchCustomers();
     if (!wastes && !loading) fetchWastes();
+    if (orders && !orderSelected) this.selectFirstOrder(orders);
+  }
+
+  selectFirstOrder(orders) {
+    const { chooseOrder } = this.props;
+    const sortedOrders = reverse(
+      sortBy(orders, order => parseInt(order.number)),
+    );
+    chooseOrder(head(sortedOrders));
   }
 
   fetchEntitiesToAddOrderManifest() {
@@ -273,12 +287,12 @@ export class OrdersPage extends React.Component {
                 </Grid>
               </Grid>
               <Grid item xs={7}>
-                <OrderDetails
-                  details={orderSelected || { items: [], customer: {} }}
+                {orderSelected && <OrderDetails
+                  details={orderSelected || head(orders)}
                   onClickAddOrderManifest={() =>
                     this.setOpenAddManifestDialog(true)
                   }
-                />
+                />}
               </Grid>
             </Grid>
             <Dialog

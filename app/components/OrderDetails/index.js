@@ -11,16 +11,10 @@ import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
 import Avatar from '@material-ui/core/Avatar';
 import IconButton from '@material-ui/core/IconButton';
-import { green, orange } from '@material-ui/core/colors';
-import Typography from '@material-ui/core/Typography';
-import ShareIcon from '@material-ui/icons/Share';
-import FavoriteIcon from '@material-ui/icons/Favorite';
-import Grid from '@material-ui/core/Grid';
-import LocalShippingIcon from '@material-ui/icons/LocalShipping';
+import { green } from '@material-ui/core/colors';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Button from '@material-ui/core/Button';
 import AddIcon from '@material-ui/icons/Add';
@@ -29,8 +23,13 @@ import FormControl from '@material-ui/core/FormControl';
 import TextField from '@material-ui/core/TextField';
 import Chip from '@material-ui/core/Chip';
 import DescriptionIcon from '@material-ui/icons/Description';
-
-console.log(api);
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import ListSubheader from '@material-ui/core/ListSubheader';
+import Stepper from '@material-ui/core/Stepper';
+import Step from '@material-ui/core/Step';
+import StepLabel from '@material-ui/core/StepLabel';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -38,9 +37,7 @@ const useStyles = makeStyles(theme => ({
     width: '100%',
     backgroundColor: theme.palette.background.paper,
   },
-  card: {
-    // height: '100%',
-  },
+  card: {},
   button: {
     margin: 3,
   },
@@ -58,9 +55,10 @@ const useStyles = makeStyles(theme => ({
   expandOpen: {
     transform: 'rotate(180deg)',
   },
-  avatar: {
-  },
+  avatar: {},
 }));
+
+const steps = ['Demanda criada', 'Coleta em execução', 'Demanda executada'];
 
 function ExecutedOrder(props) {
   const {
@@ -101,51 +99,69 @@ function ExecutedOrder(props) {
       />
       <CardContent>
         <div>
+          <Stepper activeStep={2} alternativeLabel>
+            {steps.map(label => (
+              <Step key={label}>
+                <StepLabel>{label}</StepLabel>
+              </Step>
+            ))}
+          </Stepper>
           <FormControl fullWidth>
             <TextField
               label="Destinador"
               margin="normal"
-              value={manifest.destinator.companyName}
+              value={manifest.transporter.companyName}
               disabled
             />
           </FormControl>
-          <FormControl fullWidth>
+          <FormControl style={{ width: '55%' }}>
+            <TextField
+              label="Motorista"
+              margin="normal"
+              value={manifest.driver.name}
+              disabled
+            />
+          </FormControl>
+          <FormControl style={{ width: '45%' }}>
             <TextField
               label="Veículo"
               margin="normal"
-              value={`${manifest.vehicle.description} ${
+              value={`${manifest.vehicle.description} (${
                 manifest.vehicle.licencePlateNumber
-              }`}
+              })`}
               disabled
             />
           </FormControl>
-          <FormControl fullWidth>
-            <Table
-              className={classes.table}
-              size="small"
-              aria-label="a dense table"
-            >
-              <TableHead>
-                <TableRow>
-                  <TableCell>resíduo</TableCell>
-                  <TableCell align="right">quantidade</TableCell>
-                </TableRow>
-              </TableHead>
+          {manifest.items.map(row => (
+            <div>
+              <FormControl style={{ width: '70%' }}>
+                <TextField value={row.waste} disabled />
+              </FormControl>
+              <FormControl style={{ width: '30%' }}>
+                <TextField
+                  value={`${row.quantity}${row.measurement}`}
+                  disabled
+                />
+              </FormControl>
+            </div>
+          ))}
+          <FormControl style={{ marginTop: 25, width: '50%' }}>
+            <Table className={classes.table} size="small">
               <TableBody>
-                {manifest.items.map(row => (
+                {manifest.manifestPackagings.map(row => (
                   <TableRow key={row.waste}>
                     <TableCell component="th" scope="row">
                       {row.waste}
                     </TableCell>
-                    <TableCell align="right">{`${row.quantity}${
-                      row.measurement
+                    <TableCell align="right">{`(${row.quantity}) ${
+                      row.packaging
                     }`}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
             </Table>
           </FormControl>
-          <FormControl fullWidth>
+          <FormControl fullWidth style={{ marginTop: 35 }}>
             <TextField
               name="notes"
               label="Observações"
@@ -192,6 +208,13 @@ function NotExecutedOrder(props) {
       />
       <CardContent>
         <div>
+          <Stepper activeStep={0} alternativeLabel>
+            {steps.map(label => (
+              <Step key={label}>
+                <StepLabel>{label}</StepLabel>
+              </Step>
+            ))}
+          </Stepper>
           <FormControl>
             {details.items.map(i => (
               <Chip style={{ marginBottom: 4 }} label={i.waste.class} />
