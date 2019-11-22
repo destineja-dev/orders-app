@@ -69,7 +69,7 @@ function ExecutedOrder(props) {
   const {
     classes,
     details,
-    details: { manifest },
+    details: { manifest, manifest: { dispatcher } },
     onClickAddOrderManifest,
   } = props;
   return (
@@ -137,43 +137,43 @@ function ExecutedOrder(props) {
               disabled
             />
           </FormControl>
-          <FormControl fullWidth>
+          {dispatcher && <FormControl fullWidth>
             <TextField
               label="Expeditor"
               margin="normal"
-              value={`${manifest.dispatcher.name} ${manifest.dispatcher.documentType} ${manifest.dispatcher.document}`}
+              value={`${dispatcher.name} ${dispatcher.documentType} ${dispatcher.document}`}
               disabled
             />
-          </FormControl>
+          </FormControl>}
           <FormControl style={{ marginTop: 25}} fullWidth>
             <Table className={classes.table} size="small" aria-label="a dense table">
               <TableHead>
                 <TableRow>
                   <TableCell>resíduo</TableCell>
-                  <TableCell align="right">quantidade</TableCell>                  
+                  <TableCell align="right">quantidade</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {manifest.items.map(row => (
-                  <TableRow key={row.name}>                    
+                  <TableRow key={row.name}>
                     <TableCell>{row.waste}</TableCell>
-                    <TableCell align="right">{`${row.quantity}${row.measurement}`}</TableCell>                    
+                    <TableCell align="right">{`${row.quantity}${row.measurement}`}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
             </Table>
-          </FormControl>          
+          </FormControl>
           <FormControl style={{ marginTop: 25 }} fullWidth>
             <Table className={classes.table} size="small">
-              <TableHead>   
+              <TableHead>
                 <TableRow>
                   <TableCell>acondicionamento</TableCell>
-                  <TableCell align="right">quantidade</TableCell>                  
+                  <TableCell align="right">quantidade</TableCell>
                 </TableRow>
               </TableHead>
-              <TableBody>                
+              <TableBody>
                 {manifest.manifestPackagings.map(row => (
-                  <TableRow key={row.waste}>                    
+                  <TableRow key={row.waste}>
                     <TableCell>{row.packaging}</TableCell>
                     <TableCell align="right">{row.quantity}</TableCell>
                   </TableRow>
