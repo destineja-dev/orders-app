@@ -172,15 +172,15 @@ export class OrdersPage extends React.Component {
     if (!orders && !loading) fetchOrders();
     if (!customers && !loading) fetchCustomers();
     if (!wastes && !loading) fetchWastes();
-    if (orders && !orderSelected) this.selectFirstOrder(orders);
+    if (orders && orders.length && !orderSelected) this.selectFirstOrder(orders);
   }
 
-  selectFirstOrder(orders) {
+  selectFirstOrder(orders) {    
     const { chooseOrder } = this.props;
     const sortedOrders = reverse(
       sortBy(orders, order => parseInt(order.number)),
     );
-    chooseOrder(head(sortedOrders));
+    chooseOrder(head(sortedOrders));    
   }
 
   fetchEntitiesToAddOrderManifest() {
@@ -212,10 +212,10 @@ export class OrdersPage extends React.Component {
   }
 
   setOpenAddManifestDialog(opened) {
-    this.fetchEntitiesToAddOrderManifest();
     this.setState({
       openAddManifestDialog: opened,
     });
+    this.fetchEntitiesToAddOrderManifest();    
   }
 
   handleSelectOrder(selectedOrder) {

@@ -11,6 +11,7 @@ import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import AssignmentIcon from '@material-ui/icons/Assignment';
 import IconButton from '@material-ui/core/IconButton';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import Avatar from '@material-ui/core/Avatar';
 import { green, orange } from '@material-ui/core/colors';
 
@@ -63,18 +64,16 @@ function OrdersList(props) {
             <ListItemText
               primary={`${row.number} ${row.customer.name}`}
               secondary={`${row.items.map(i => i.waste.class).join(' ')}`}
-            />
-            {row.status === 'Created' && (
-              <ListItemSecondaryAction>
-                <IconButton
-                  edge="end"
-                  aria-label="assign"
-                  onClick={() => console.log('complete', row)}
-                >
-                  <AssignmentIcon />
-                </IconButton>
-              </ListItemSecondaryAction>
-            )}
+            />            
+            <ListItemSecondaryAction>
+              <IconButton
+                edge="end"
+                aria-label="assign"
+                onClick={() => console.log('complete', row)}
+              >
+                <ChevronRightIcon />
+              </IconButton>
+            </ListItemSecondaryAction>            
           </ListItem>
         ))}
       </List>

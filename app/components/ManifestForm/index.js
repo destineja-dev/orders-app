@@ -224,6 +224,7 @@ const renderDateField = props => {
 function getSteps() {
   return [
     'Adicione informações do Coletor',
+    'Informe o Expeditor',
     'Informe Data e Hora da chegada e saída',
     'Adicione os resíduos coletados',
     'Adicione os acondicionamentos utilizados',
@@ -293,6 +294,40 @@ function getStepContent(
       return (
         <div>
           <Field
+            style={{ width: '40%' }}
+            label="Nome"
+            name="dispatcher.name"
+            value={10}
+            component={renderTextField}
+            className={classes.formControl}
+          />
+          <Field
+            style={{ width: '7%' }}
+            name="dispatcher.documentType"            
+            value={10}
+            component={renderCustomSelect}
+            className={classes.formControl}
+          >
+            {['RG', 'CPF', 'CNH'].map(c => (
+              <MenuItem key={c} value={c}>
+                {c}
+              </MenuItem>
+            ))}
+          </Field>
+          <Field
+            style={{ width: '40%' }}
+            label="Documento"
+            name="dispatcher.document"
+            value={10}
+            component={renderTextField}
+            className={classes.formControl}
+          />
+        </div>
+      );
+    case 2:
+      return (
+        <div>
+          <Field
             style={{ width: '50%' }}
             name="at"
             label="Data"
@@ -312,7 +347,7 @@ function getStepContent(
           />
         </div>
       );
-    case 2:
+    case 3:
       return (
         <div>
           <FormControl fullWidth>
@@ -325,7 +360,7 @@ function getStepContent(
           </FormControl>
         </div>
       );
-    case 3:
+    case 4:
       return (
         <FormControl fullWidth>
           <FieldArray
@@ -335,7 +370,7 @@ function getStepContent(
           />
         </FormControl>
       );
-    case 4:
+    case 5:
       return (
         <Field
           name="notes"

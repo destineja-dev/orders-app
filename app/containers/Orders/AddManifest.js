@@ -125,7 +125,7 @@ class AddManifest extends React.Component {
               <CloseIcon />
             </IconButton>
             <Typography variant="h6" className={classes.title}>
-              Informar coleta para a demanda #{orderSelected.number} -{' '}
+              Coleta #{orderSelected.number} -{' '}
               {orderSelected.customer.name}
             </Typography>
           </Toolbar>

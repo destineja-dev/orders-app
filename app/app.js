@@ -15,10 +15,14 @@ import { Provider } from 'react-redux';
 import { ConnectedRouter } from 'react-router-redux';
 import FontFaceObserver from 'fontfaceobserver';
 import createHistory from 'history/createBrowserHistory';
+import { MuiThemeProvider } from "@material-ui/core/styles";
+import { StylesProvider } from "@material-ui/styles";
+import { ThemeProvider } from "styled-components";
 import 'sanitize.css/sanitize.css';
 
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
+import { green, orange } from '@material-ui/core/colors';
 
 // Import root app
 import App from 'containers/App';
@@ -38,6 +42,8 @@ import { translationMessages } from './i18n';
 // Import CSS reset and Global Styles
 import './global-styles';
 
+import maTheme from "utils/theme";
+
 // Observe loading of Open Sans (to remove open sans, remove the <link> tag in
 // the index.html file and this observer)
 const openSansObserver = new FontFaceObserver('Open Sans', {});
@@ -53,19 +59,27 @@ const history = createHistory();
 const store = configureStore(initialState, history);
 const MOUNT_NODE = document.getElementById('app');
 
+console.log(maTheme[1]);
+
 const render = messages => {
   ReactDOM.render(
     <Provider store={store}>
       <LanguageProvider messages={messages}>
         <ConnectedRouter history={history}>
-          <MuiPickersUtilsProvider utils={DateFnsUtils}>
-            <App />
-          </MuiPickersUtilsProvider>
+          <StylesProvider injectFirst>
+            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+              <MuiThemeProvider theme={maTheme[0]}>
+                <ThemeProvider theme={maTheme[0]}>
+                  <App /> 
+                </ThemeProvider>
+              </MuiThemeProvider>
+            </MuiPickersUtilsProvider>
+          </StylesProvider>
         </ConnectedRouter>
       </LanguageProvider>
     </Provider>,
     MOUNT_NODE,
-  );
+  )
 };
 
 if (module.hot) {

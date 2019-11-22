@@ -18,6 +18,7 @@ import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
+import SettingsIcon from '@material-ui/icons/Settings';
 
 import { mainListItems, secondaryListItems } from 'components/ListItems';
 import NotFoundPage from 'containers/NotFoundPage/Loadable';
@@ -88,9 +89,9 @@ const styles = theme => ({
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
-    width: theme.spacing(7),
+    width: theme.spacing(8),
     [theme.breakpoints.up('sm')]: {
-      width: theme.spacing(9),
+      width: theme.spacing(14),
     },
   },
   appBarSpacer: theme.mixins.toolbar,
@@ -154,7 +155,7 @@ class App extends React.Component {
               >
                 <MenuIcon />
               </IconButton>
-              <ShoppingCartIcon />
+              <SettingsIcon />
               <Typography
                 style={{ marginLeft: 15 }}
                 variant="h6"
@@ -162,7 +163,7 @@ class App extends React.Component {
                 noWrap
                 className={classes.title}
               >
-                demandas app
+                admin app
               </Typography>
             </Toolbar>
           </AppBar>
