@@ -59,11 +59,11 @@ const useStyles = makeStyles(theme => ({
     transform: 'rotate(180deg)',
   },
   table: {
-    backgroundColor: grey[100]
+    backgroundColor: grey[100],
   },
 }));
 
-const steps = ['Demanda criada', 'Coleta em execução', 'Demanda executada'];
+const steps = ['Criada', 'Executada', 'Destinada'];
 
 function ExecutedOrder(props) {
   const {
@@ -104,7 +104,7 @@ function ExecutedOrder(props) {
       />
       <CardContent>
         <div>
-          <Stepper activeStep={2} alternativeLabel>
+          <Stepper activeStep={2} alternativeLabel fullWidth>
             {steps.map(label => (
               <Step key={label}>
                 <StepLabel>{label}</StepLabel>
@@ -145,8 +145,12 @@ function ExecutedOrder(props) {
               disabled
             />
           </FormControl>}
-          <FormControl style={{ marginTop: 25}} fullWidth>
-            <Table className={classes.table} size="small" aria-label="a dense table">
+          <FormControl style={{ marginTop: 25 }} fullWidth>
+            <Table
+              className={classes.table}
+              size="small"
+              aria-label="a dense table"
+            >
               <TableHead>
                 <TableRow>
                   <TableCell>resíduo</TableCell>
@@ -238,26 +242,42 @@ function NotExecutedOrder(props) {
               </Step>
             ))}
           </Stepper>
-          <FormControl>
-            {details.items.map(i => (
-              <Chip style={{ marginBottom: 4 }} label={i.waste.class} />
-            ))}
+          <FormControl fullWidth>
+            <Table
+              className={classes.table}
+              size="small"
+              aria-label="a dense table"
+            >
+              <TableHead>
+                <TableRow>
+                  <TableCell>classes de resíduo</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {details.items.map(row => (
+                  <TableRow key={row.waste.class}>
+                    <TableCell>{row.waste.class}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
           </FormControl>
           <FormControl fullWidth>
             <TextField
+              disabled
               name="notes"
               label="Observações"
               value={details.notes}
               multiline
-              rows="4"
+              rows="2"
               margin="normal"
               variant="outlined"
             />
           </FormControl>
           <Button
             size="small"
-            variant="contained"
-            color="primary"
+            color="secondary"
+            variant="outlined"
             className={classes.button}
             component="a"
             href={`${api.base}/orders/${details.id}/empty-document`}
@@ -266,8 +286,8 @@ function NotExecutedOrder(props) {
           </Button>
           <Button
             size="small"
-            variant="contained"
-            color="primary"
+            color="secondary"
+            variant="outlined"
             className={classes.button}
             onClick={() => onClickAddOrderManifest(details)}
           >
@@ -275,8 +295,8 @@ function NotExecutedOrder(props) {
           </Button>
           <Button
             size="small"
-            variant="contained"
-            color="secondary"
+            color="danger"
+            variant="outlined"
             className={classes.button}
             disabled
           >

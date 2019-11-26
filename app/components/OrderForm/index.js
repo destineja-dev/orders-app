@@ -100,6 +100,12 @@ const renderWasteList = ({ fields, meta: { error, submitFailed }, wastes }) => (
   </div>
 );
 
+const renderTextField = ({ input, label, meta: { touched, error }, ...custom }) => (
+  <FormControl {...custom}>
+    <TextField label={label} {...input} {...custom} />
+  </FormControl>
+);
+
 const renderNotes = ({ input, label, meta: { touched, error }, ...custom }) => (
   <FormControl fullWidth>
     <TextField label="Observações" {...input} {...custom} />
@@ -107,12 +113,28 @@ const renderNotes = ({ input, label, meta: { touched, error }, ...custom }) => (
 );
 
 function getSteps() {
-  return ['Selecione o cliente', 'Adicione os resíduos', 'Informe observações'];
+  return [
+    'Número da Demanda',
+    'Selecione o cliente',
+    'Adicione os resíduos',
+    'Informe observações',
+  ];
 }
 
 function getStepContent(step, classes, customersList, wastesList) {
   switch (step) {
     case 0:
+      return (
+        <Field
+          focus
+          name="number"
+          margin="normal"
+          autoFocus
+          placeholder="ex. 00032"
+          component={renderTextField}
+        />
+      );
+    case 1:
       return (
         <Field
           name="customerId"
@@ -127,7 +149,7 @@ function getStepContent(step, classes, customersList, wastesList) {
           ))}
         </Field>
       );
-    case 1:
+    case 2:
       return (
         <FormControl fullWidth>
           <FieldArray
@@ -137,7 +159,7 @@ function getStepContent(step, classes, customersList, wastesList) {
           />
         </FormControl>
       );
-    case 2:
+    case 3:
       return (
         <Field
           name="notes"

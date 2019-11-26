@@ -1,5 +1,6 @@
 import { fromJS } from 'immutable';
 import remove from 'lodash/remove';
+import map from 'lodash/map';
 import {
   LOAD_ORDERS,
   LOAD_ORDERS_ERROR,
@@ -50,8 +51,15 @@ function orderReducer(state = initialState, action) {
         .set('orderSaved', false)
         .set('loading', true)
         .set('error', false);
-    case ORDERS_LOADED:
-      return state.set('orders', action.orders).set('loading', false);
+    case ORDERS_LOADED: {
+      const { orders } = action;
+      const ordersSelectable = map(orders, o => ({
+        ...o,
+        selectable: o.status === 'Executed',
+        selected: false,
+      }));
+      return state.set('orders', ordersSelectable).set('loading', false);
+    }
     case LOAD_ORDERS_ERROR:
       return state.set('error', action.error).set('loading', false);
     case SELECT_ORDER:

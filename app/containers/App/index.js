@@ -155,7 +155,7 @@ class App extends React.Component {
               >
                 <MenuIcon />
               </IconButton>
-              <SettingsIcon />
+
               <Typography
                 style={{ marginLeft: 15 }}
                 variant="h6"

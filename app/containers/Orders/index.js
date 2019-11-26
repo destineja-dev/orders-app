@@ -21,6 +21,16 @@ import Button from '@material-ui/core/Button';
 import Snackbar from '@material-ui/core/Snackbar';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
+import Switch from '@material-ui/core/Switch';
+import FormGroup from '@material-ui/core/FormGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import ExpansionPanel from '@material-ui/core/ExpansionPanel';
+import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
+import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
+import Typography from '@material-ui/core/Typography';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import FilterListIcon from '@material-ui/icons/FilterList';
+
 import OrdersList from 'components/OrdersList';
 import OrderDetails from 'components/OrderDetails';
 
@@ -146,6 +156,7 @@ export class OrdersPage extends React.Component {
       openAddOrderDialog: false,
       openAddManifestDialog: false,
       snackbarOrderOpen: true,
+      enableSelectManyOrders: false,
     };
     this.setOpenAddOrderDialog = this.setOpenAddOrderDialog.bind(this);
     this.setOpenAddManifestDialog = this.setOpenAddManifestDialog.bind(this);
@@ -175,12 +186,12 @@ export class OrdersPage extends React.Component {
     if (orders && orders.length && !orderSelected) this.selectFirstOrder(orders);
   }
 
-  selectFirstOrder(orders) {    
+  selectFirstOrder(orders) {
     const { chooseOrder } = this.props;
     const sortedOrders = reverse(
       sortBy(orders, order => parseInt(order.number)),
     );
-    chooseOrder(head(sortedOrders));    
+    chooseOrder(head(sortedOrders));
   }
 
   fetchEntitiesToAddOrderManifest() {
@@ -215,7 +226,7 @@ export class OrdersPage extends React.Component {
     this.setState({
       openAddManifestDialog: opened,
     });
-    this.fetchEntitiesToAddOrderManifest();    
+    this.fetchEntitiesToAddOrderManifest();
   }
 
   handleSelectOrder(selectedOrder) {
@@ -233,6 +244,7 @@ export class OrdersPage extends React.Component {
       openAddOrderDialog,
       openAddManifestDialog,
       snackbarOrderOpen,
+      enableSelectManyOrders,
     } = this.state;
     return (
       <div className={classes.root}>
@@ -243,11 +255,40 @@ export class OrdersPage extends React.Component {
                 <Grid item xs={12} style={{ marginBottom: 5 }}>
                   <Paper className={classes.paper}>
                     <div className={classes.search}>
-                      <div className={classes.searchIcon}>
-                        <SearchIcon />
-                      </div>
+                      <FormGroup row>
+                        <Button
+                          variant="contained"
+                          color="secondary"
+                          onClick={() => this.setOpenAddOrderDialog(true)}
+                          className={classes.button}
+                        >
+                          <AddIcon /> Demanda
+                        </Button>
+                        <FormControlLabel
+                          style={{ marginLeft: 50 }}
+                          control={
+                            <Switch
+                              onChange={event => {
+                                this.setState({
+                                  enableSelectManyOrders: event.target.checked,
+                                });
+                              }}
+                            />
+                          }
+                          label="Selecionar vários"
+                        />
+                      </FormGroup>
+                    </div>
+                  </Paper>
+                </Grid>
+                <Grid item xs={12} style={{ marginBottom: 5 }}>
+                  {false && <ExpansionPanel disabled>
+                    <ExpansionPanelSummary
+                      expandIcon={<ExpandMoreIcon />}
+                      aria-label="Expand"
+                    >
+                      <FilterListIcon />
                       <InputBase
-                        disabled
                         placeholder="Procurar…"
                         classes={{
                           root: classes.inputRoot,
@@ -255,16 +296,32 @@ export class OrdersPage extends React.Component {
                         }}
                         inputProps={{ 'aria-label': 'search' }}
                       />
+                    </ExpansionPanelSummary>
+                    <ExpansionPanelDetails>
+                      <Typography>
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada lacus ex,
+                        sit amet blandit leo lobortis eget.
+                      </Typography>
+                    </ExpansionPanelDetails>
+                  </ExpansionPanel>}
+                </Grid>
+                <Grid item xs={12} style={{ marginBottom: 5 }}>
+                  {enableSelectManyOrders && <ExpansionPanel expanded>
+                    <ExpansionPanelSummary
+                      expandIcon={<ExpandMoreIcon />}
+                      aria-label="Expand"
+                    >
+                      <FilterListIcon /> Ações em massa
+                    </ExpansionPanelSummary>
+                    <ExpansionPanelDetails>
                       <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={() => this.setOpenAddOrderDialog(true)}
+                        color="secondary"
                         className={classes.button}
                       >
-                        <AddIcon />
+                        <AddIcon /> destinação
                       </Button>
-                    </div>
-                  </Paper>
+                    </ExpansionPanelDetails>
+                  </ExpansionPanel>}
                 </Grid>
                 <Grid item xs={12} style={{ padding: 0 }}>
                   <Paper
@@ -280,6 +337,7 @@ export class OrdersPage extends React.Component {
                   >
                     <OrdersList
                       loading={loading}
+                      enableSelectMany={enableSelectManyOrders}
                       list={orders || []}
                       onSelect={this.handleSelectOrder}
                     />
@@ -287,12 +345,14 @@ export class OrdersPage extends React.Component {
                 </Grid>
               </Grid>
               <Grid item xs={7}>
-                {orderSelected && <OrderDetails
-                  details={orderSelected || head(orders)}
-                  onClickAddOrderManifest={() =>
-                    this.setOpenAddManifestDialog(true)
-                  }
-                />}
+                {orderSelected &&
+                  <OrderDetails
+                    details={orderSelected || head(orders)}
+                    onClickAddOrderManifest={() =>
+                      this.setOpenAddManifestDialog(true)
+                    }
+                  />
+                }
               </Grid>
             </Grid>
             <Dialog
